@@ -36,17 +36,23 @@ nome = st.sidebar.text_input("Buscar Nome")
 
 telefone = st.sidebar.text_input("Buscar Telefone")
 
+origem = st.sidebar.text_input(
+    "Origem do Lead"
+)
+
 status = st.sidebar.selectbox(
     "Status",
     [
-        "Todos",
-        "Não contatado",
-        "Tentativa sem resposta",
-        "Visita",
-        "Proposta",
-        "Fechado",
-        "Perdido"
-    ]
+    "Não contatado",
+    "Tentativa sem resposta",
+    "Conversando",
+    "Interessado",
+    "Agendou visita",
+    "Em negociação",
+    "Não tem interesse",
+    "Já comprou imóvel",
+    "Sem Whatsapp"
+]
 )
 
 query = "SELECT * FROM leads WHERE 1=1"
@@ -56,6 +62,9 @@ if nome:
 
 if telefone:
     query += f" AND telefone LIKE '%{telefone}%'"
+
+if origem:
+    query += f" AND origem_lead LIKE '%{origem}%'"
 
 if status != "Todos":
     query += f" AND status='{status}'"
@@ -68,6 +77,7 @@ df_exibicao = df[
     [
         "id",
         "nome",
+        "origem_lead",
         "status",
         "ultimo_contato",
         "proxima_acao"
@@ -115,6 +125,11 @@ if "lead_id" in st.session_state:
             lead["nome"]
         )
 
+        origem_edit = st.text_input(
+            "Origem do Lead",
+            str(lead["origem_lead"])
+        )
+
         status_opcoes = [
             "Não contatado",
             "Tentativa sem resposta",
@@ -144,19 +159,19 @@ if "lead_id" in st.session_state:
             "Salvar"
         )
 
-        st.write("Salvar =", salvar)
-
     if salvar:
 
         conn.execute("""
         UPDATE leads
         SET
             nome=?,
+            origem_lead=?,
             status=?,
             observacoes=?
         WHERE id=?
         """, (
             nome_edit,
+            origem_edit,
             status_edit,
             obs,
             lead_id
@@ -171,10 +186,7 @@ if "lead_id" in st.session_state:
     whatsapp = str(lead["telefone"])
 
     if lead["status"] == "Não contatado":
-        mensagem = gerar_mensagem(
-            "primeiro_contato",
-            lead
-        )
+        mensagem = gerar_mensagem(lead)
 
         url = (
             f"https://wa.me/55{whatsapp}"

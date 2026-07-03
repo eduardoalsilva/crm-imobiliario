@@ -6,13 +6,21 @@ DB = "crm.db"
 def importar_excel(arquivo):
 
     df = pd.read_excel(arquivo)
+    
+    if "Origem do Lead" not in df.columns:
+        df["Origem do Lead"] = "Não informado"
 
     conn = sqlite3.connect(DB)
     cur = conn.cursor()
 
     for _, row in df.iterrows():
 
-        telefone = str(row.get("Telefone", ""))
+        telefone = limpar_telefone(
+            row.get("Telefone", "")
+        )   
+        
+        if not telefone:
+            continue    
 
         cur.execute(
             "SELECT id FROM leads WHERE telefone=?",
@@ -27,23 +35,11 @@ def importar_excel(arquivo):
             UPDATE leads
             SET
                 nome=?,
-                whatsapp=?,
-                status=?,
-                interesse=?,
-                proxima_acao=?,
-                ultimo_contato=?,
-                prioridade=?,
-                observacoes=?
+                origem_lead=?
             WHERE telefone=?
             """, (
                 row.get("Nome"),
-                row.get("WhatsApp"),
-                row.get("Status"),
-                row.get("Interesse"),
-                row.get("Próxima ação"),
-                row.get("Último contato"),
-                row.get("Prioridade"),
-                row.get("Observações"),
+                row.get("Origem do Lead", "Não informado"),
                 telefone
             ))
 
@@ -54,6 +50,7 @@ def importar_excel(arquivo):
                 nome,
                 telefone,
                 whatsapp,
+                origem_lead,
                 status,
                 interesse,
                 proxima_acao,
@@ -61,14 +58,15 @@ def importar_excel(arquivo):
                 prioridade,
                 observacoes
             )
-            VALUES (?,?,?,?,?,?,?,?,?)
+            VALUES (?,?,?,?,?,?,?,?,?,?)
             """, (
                 row.get("Nome"),
                 telefone,
                 row.get("WhatsApp"),
-                row.get("Status"),
-                row.get("Interesse"),
-                row.get("Próxima ação"),
+                row.get("Origem do Lead", "Não informado"),
+                row.get("Status") or "Não contatado",
+                row.get("Interesse") or "Não definido",
+                row.get("Próxima ação") or "Primeiro contato",
                 row.get("Último contato"),
                 row.get("Prioridade"),
                 row.get("Observações")
@@ -76,3 +74,7 @@ def importar_excel(arquivo):
 
     conn.commit()
     conn.close()
+
+def limpar_telefone(telefone):
+    telefone = str(telefone)
+    return "".join(filter(str.isdigit, telefone))

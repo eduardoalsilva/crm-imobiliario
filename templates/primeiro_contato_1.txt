@@ -1,0 +1,12 @@
+Olá {nome}, tudo bem?
+
+Meu nome é {corretor} e sou especialista no programa Minha Casa Minha Vida da {empresa}.
+
+Vi que você demonstrou interesse em um imóvel e gostaria de entender melhor sua busca para verificar as oportunidades disponíveis.
+
+Em qual região você procura?
+
+Fico à disposição.
+
+{corretor}
+{empresa}

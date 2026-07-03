@@ -15,6 +15,7 @@ def criar_banco():
         nome TEXT,
         telefone TEXT,
         whatsapp TEXT,
+        origem_lead TEXT,
         status TEXT,
         interesse TEXT,
         proxima_acao TEXT,
@@ -27,4 +28,25 @@ def criar_banco():
     )
     """)
 
+    # Migração automática
+    colunas = [
+        coluna[1]
+        for coluna in cur.execute(
+            "PRAGMA table_info(leads)"
+        ).fetchall()
+    ]
+
+    if "origem_lead" not in colunas:
+        cur.execute("""
+        ALTER TABLE leads
+        ADD COLUMN origem_lead TEXT
+        """)
+
+    cur.execute("""
+    UPDATE leads
+    SET origem_lead = 'Não informado'
+    WHERE origem_lead IS NULL
+    """)
+
     conn.commit()
+    conn.close()

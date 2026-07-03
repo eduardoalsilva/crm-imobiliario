@@ -1,4 +1,5 @@
 from pathlib import Path
+import random
 
 def carregar_template(nome_template):
     caminho = Path("templates") / f"{nome_template}.txt"
@@ -7,8 +8,18 @@ def carregar_template(nome_template):
         return arquivo.read()
 
 
-def gerar_mensagem(template, lead):
-    texto = carregar_template(template)
+def gerar_mensagem(lead):
+
+    templates = [
+        "primeiro_contato_1",
+        "primeiro_contato_2",
+        "primeiro_contato_3",
+        "primeiro_contato_4"
+    ]
+
+    template_escolhido = random.choice(templates)
+
+    texto = carregar_template(template_escolhido)
 
     nome = str(lead["nome"]).strip()
 
