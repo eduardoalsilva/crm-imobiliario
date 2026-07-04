@@ -3,26 +3,21 @@ import random
 from pathlib import Path
 
 
-def carregar_template(nome_template):
+def carregar_mensagens():
     caminho = Path(__file__).resolve().parent / "mensagens.json"
 
     with open(caminho, "r", encoding="utf-8") as arquivo:
-        mensagens = json.load(arquivo)
+        return json.load(arquivo)
 
-    return mensagens[nome_template]
+
+def carregar_mensagens_da_categoria(categoria="primeiro_contato"):
+    mensagens_por_categoria = carregar_mensagens()
+    return mensagens_por_categoria[categoria]
 
 
 def gerar_mensagem(lead):
-    templates = [
-        "primeiro_contato_1",
-        "primeiro_contato_2",
-        "primeiro_contato_3",
-        "primeiro_contato_4"
-    ]
-
-    template_escolhido = random.choice(templates)
-
-    texto = carregar_template(template_escolhido)
+    mensagens = carregar_mensagens_da_categoria()
+    texto = random.choice(mensagens)
 
     nome = str(lead["nome"]).strip()
 

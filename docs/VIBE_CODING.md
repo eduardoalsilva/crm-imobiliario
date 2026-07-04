@@ -2,33 +2,40 @@
 
 ## Issue #1 - Centralizar templates de mensagens
 
+[Prompt da issue 1]
+
+Status: Concluída
+
+---
+
+## Issue #2 - Expandir biblioteca para 10 mensagens de primeiro contato
+
 ### Contexto
 
-Atualmente as mensagens de primeiro contato estão distribuídas em múltiplos arquivos .txt.
+Atualmente existem poucas mensagens de primeiro contato.
 
 ### Objetivo
 
-Centralizar todas as mensagens em uma única estrutura para facilitar manutenção e expansão.
+Aumentar a variedade de abordagens para reduzir repetição e tornar os contatos mais naturais.
 
 ### Prompt
 
-Refatore o sistema de mensagens do CRM.
-
-Contexto:
-Atualmente as mensagens de primeiro contato estão distribuídas em múltiplos arquivos .txt.
+Criar novas mensagens de primeiro contato para o CRM.
 
 Objetivo:
-Centralizar todas as mensagens em uma única estrutura.
+Aumentar a variedade de abordagens e reduzir repetição durante a prospecção.
 
 Requisitos:
-- Utilizar um único arquivo mensagens.json.
-- Manter compatibilidade com o fluxo atual.
-- Continuar selecionando uma mensagem aleatória.
-- Não alterar a forma como o usuário utiliza o CRM.
-- Não alterar a geração do link do WhatsApp.
-- Não alterar a personalização com nome do lead.
+- Criar pelo menos 10 mensagens.
+- Todas devem utilizar a variável de nome do lead.
+- As mensagens devem ter abordagens diferentes entre si.
+- Evitar apenas trocar palavras mantendo a mesma estrutura.
+- Manter tom profissional, amigável e consultivo.
+- Compatível com o sistema atual de personalização.
+- Deixar sempre "especialista do programa Minha Casa Minha Vida"
+- Perguntar de alguma forma: "Que região você procura?"
 
 Critérios de conclusão:
-- Todas as mensagens estão armazenadas em mensagens.json.
-- O sorteio continua funcionando.
-- O comportamento do sistema permanece igual para o usuário.
+- Existem pelo menos 10 mensagens.
+- Todas funcionam corretamente com a personalização por nome.
+- Há diversidade real entre as abordagens.
