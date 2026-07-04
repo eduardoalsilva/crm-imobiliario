@@ -1,15 +1,18 @@
-from pathlib import Path
+import json
 import random
+from pathlib import Path
+
 
 def carregar_template(nome_template):
-    caminho = Path("templates") / f"{nome_template}.txt"
+    caminho = Path(__file__).resolve().parent / "mensagens.json"
 
     with open(caminho, "r", encoding="utf-8") as arquivo:
-        return arquivo.read()
+        mensagens = json.load(arquivo)
+
+    return mensagens[nome_template]
 
 
 def gerar_mensagem(lead):
-
     templates = [
         "primeiro_contato_1",
         "primeiro_contato_2",

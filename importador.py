@@ -7,7 +7,7 @@ def importar_excel(arquivo):
 
     df = pd.read_excel(arquivo)
     
-    if "Origem do Lead" not in df.columns:
+    if "Origem / Canal" not in df.columns:
         df["Origem do Lead"] = "Não informado"
 
     conn = sqlite3.connect(DB)
@@ -39,7 +39,7 @@ def importar_excel(arquivo):
             WHERE telefone=?
             """, (
                 row.get("Nome"),
-                row.get("Origem do Lead", "Não informado"),
+                row.get("Origem / Canal", "Não informado"),
                 telefone
             ))
 
@@ -63,7 +63,7 @@ def importar_excel(arquivo):
                 row.get("Nome"),
                 telefone,
                 row.get("WhatsApp"),
-                row.get("Origem do Lead", "Não informado"),
+                row.get("Origem / Canal", "Não informado"),
                 row.get("Status") or "Não contatado",
                 row.get("Interesse") or "Não definido",
                 row.get("Próxima ação") or "Primeiro contato",

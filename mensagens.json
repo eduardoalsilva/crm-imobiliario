@@ -1,0 +1,6 @@
+{
+  "primeiro_contato_1": "Olá {nome}, tudo bem?\n\nMeu nome é {corretor} e sou especialista no programa Minha Casa Minha Vida da {empresa}.\n\nVi que você demonstrou interesse em um imóvel e gostaria de entender melhor sua busca para verificar as oportunidades disponíveis.\n\nEm qual região você procura?\n\nFico à disposição.\n\n{corretor}\n{empresa}",
+  "primeiro_contato_2": "Olá {nome}, tudo bem?\n\nSou {corretor}, especialista no programa Minha Casa Minha Vida da {empresa}.\n\nEstou entrando em contato porque você demonstrou interesse em adquirir um imóvel.\n\nPara eu conseguir te ajudar melhor, em qual região você procura?\n\nFico à disposição.\n\n{corretor}\n{empresa}",
+  "primeiro_contato_3": "Olá {nome}, tudo bem?\n\nMeu nome é {corretor} e atuo com imóveis da {empresa}, especialmente pelo programa Minha Casa Minha Vida.\n\nGostaria de entender um pouco melhor sua busca para verificar as opções disponíveis.\n\nEm qual região você tem interesse?\n\nFico à disposição para ajudar.\n\n{corretor}\n{empresa}",
+  "primeiro_contato_4": "Olá {nome}, tudo bem?\n\nSou {corretor}, especialista no programa Minha Casa Minha Vida da {empresa}.\n\nRecebi seu interesse em um imóvel e gostaria de te auxiliar nessa busca.\n\nMe conta: em qual região você procura apartamento?\n\nFico à disposição.\n\n{corretor}\n{empresa}"
+}
