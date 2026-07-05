@@ -77,10 +77,10 @@ backups/            Backups do banco
 - [x] Busca de leads
 - [x] Edição de cadastro
 - [x] Integração WhatsApp
+- [x] Origem do Lead
 
 ### V2
 
-- [ ] Origem do Lead
 - [ ] Dashboard comercial
 - [ ] Indicadores de conversão
 - [ ] Controle de atividades

@@ -43,6 +43,7 @@ origem = st.sidebar.text_input(
 status = st.sidebar.selectbox(
     "Status",
     [
+    "Todos",
     "Não contatado",
     "Tentativa sem resposta",
     "Conversando",
