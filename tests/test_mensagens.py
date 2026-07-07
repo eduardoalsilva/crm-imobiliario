@@ -21,9 +21,11 @@ class MensagensTests(unittest.TestCase):
         with open(caminho, "r", encoding="utf-8") as arquivo:
             mensagens = json.load(arquivo)
 
-        self.assertGreaterEqual(len(mensagens), 10)
+        mensagens_disponiveis = mensagens.get("primeiro_contato", [])
 
-        for texto in mensagens.values():
+        self.assertGreaterEqual(len(mensagens_disponiveis), 10)
+
+        for texto in mensagens_disponiveis:
             self.assertIn("{nome}", texto)
 
 

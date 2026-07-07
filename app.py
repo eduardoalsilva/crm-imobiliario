@@ -7,6 +7,16 @@ from datetime import date
 from database import criar_banco
 from importador import importar_excel
 from mensagens import gerar_mensagem
+from whatsapp_utils import processar_abertura_whatsapp
+from controle_envio import (
+    pode_enviar_primeiro_contato,
+    registrar_primeiro_contato,
+    reverter_primeiro_contato,
+    esta_em_pausa,
+    estado_atual,
+    obter_limite_ciclo,
+    tempo_restante_pausa,
+)
 
 criar_banco()
 
@@ -161,6 +171,8 @@ if "lead_id" in st.session_state:
         )
 
     if salvar:
+        if status_edit == "Sem Whatsapp" and lead["status"] != "Sem Whatsapp":
+            reverter_primeiro_contato()
 
         conn.execute("""
         UPDATE leads
@@ -197,7 +209,34 @@ if "lead_id" in st.session_state:
     else:
         url = f"https://wa.me/55{whatsapp}"
 
-    st.link_button(
-        "📲 Abrir WhatsApp",
-        url
-    )
+    estado = estado_atual()
+
+    em_pausa = esta_em_pausa()
+    pode_enviar = pode_enviar_primeiro_contato()
+
+    contador = estado["contador"]
+
+    limite = obter_limite_ciclo()
+
+    if em_pausa:
+        restante = tempo_restante_pausa()
+        minutos = restante // 60
+        segundos = restante % 60
+
+        st.error(f"⛔ Pausa ativa — libera em {minutos:02d}:{segundos:02d}")
+    else:
+        st.success("🟢 Envio liberado")
+
+    st.caption(f"📊 Ciclo atual: {contador} / {limite}")
+
+    if em_pausa or not pode_enviar:
+        st.button("📲 Abrir WhatsApp (bloqueado)", disabled=True)
+
+    else:
+        st.link_button(
+            "📲 Abrir WhatsApp",
+            url,
+            on_click=processar_abertura_whatsapp,
+            args=(lead_id, lead["status"]),
+            type="primary",
+        )
