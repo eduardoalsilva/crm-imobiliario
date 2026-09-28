@@ -3,6 +3,7 @@ import sqlite3
 import pandas as pd
 from urllib.parse import quote
 from datetime import date
+from config_corretor import carregar_config, salvar_config
 
 from database import criar_banco
 from importador import importar_excel
@@ -28,6 +29,17 @@ st.set_page_config(
 )
 
 st.title("🏠 CRM Imobiliário")
+
+config = carregar_config()
+
+nome_corretor_input = st.sidebar.text_input(
+    "Corretor",
+    config["nome_corretor"]
+)
+
+if nome_corretor_input != config["nome_corretor"]:
+    config["nome_corretor"] = nome_corretor_input
+    salvar_config(config)
 
 # IMPORTAÇÃO
 
