@@ -88,6 +88,7 @@ df_exibicao = df[
     [
         "id",
         "nome",
+        "telefone",
         "origem_lead",
         "status",
         "ultimo_contato",
@@ -136,10 +137,10 @@ if "lead_id" in st.session_state:
             lead["nome"]
         )
 
-        origem_edit = st.text_input(
-            "Origem do Lead",
-            str(lead["origem_lead"])
-        )
+        #origem_edit = st.text_input(
+         #   "Origem do Lead",
+          #  str(lead["origem_lead"])
+        #)
 
         status_opcoes = [
             "Não contatado",
@@ -178,13 +179,13 @@ if "lead_id" in st.session_state:
         UPDATE leads
         SET
             nome=?,
-            origem_lead=?,
+            
             status=?,
             observacoes=?
         WHERE id=?
         """, (
             nome_edit,
-            origem_edit,
+            # origem_edit,
             status_edit,
             obs,
             lead_id

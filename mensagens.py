@@ -25,6 +25,6 @@ def gerar_mensagem(lead):
 
     return texto.format(
         nome=primeiro_nome,
-        corretor="Jupiter",
+        corretor="Hermes",
         empresa="Plano&Plano"
     )
