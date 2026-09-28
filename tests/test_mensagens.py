@@ -12,7 +12,7 @@ class MensagensTests(unittest.TestCase):
         mensagem = gerar_mensagem(lead)
 
         self.assertIn("Maria", mensagem)
-        self.assertIn("Jupiter", mensagem)
+        self.assertIn("Hermes", mensagem)
         self.assertIn("Plano&Plano", mensagem)
 
     def test_ha_pelo_menos_10_mensagens_com_nome(self):
