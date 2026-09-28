@@ -194,6 +194,9 @@ pyrightconfig.json
 
 ### Database
 crm.db
+backups/
+limpar_import.py
+config_corretor.json
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,pythonbackups/
 
