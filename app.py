@@ -2,11 +2,11 @@ import streamlit as st
 import sqlite3
 import pandas as pd
 from urllib.parse import quote
-from datetime import date
+from datetime import datetime
 from config_corretor import carregar_config, salvar_config
 import database
 
-from database import criar_banco
+from database import criar_banco, conectar
 from importador import importar_excel
 from mensagens import gerar_mensagem
 from whatsapp_utils import processar_abertura_whatsapp
@@ -28,8 +28,7 @@ conn = sqlite3.connect("crm.db")
 
 @st.dialog("Ligar")
 def dialog_ligar():
-    import database
-    conn_dialog = database.conectar()
+    conn_dialog = conectar()
 
     fila = st.session_state.get("fila_ligar", [])
     posicao = st.session_state.get("posicao_ligar", 0)
@@ -40,43 +39,102 @@ def dialog_ligar():
             st.session_state["mostrar_dialog_ligar"] = False
             conn_dialog.close()
             st.rerun()
+        conn_dialog.close()
         return
 
+    lead_id = fila[posicao]
     cur = conn_dialog.cursor()
     cur.execute(
-        "SELECT nome, telefone FROM leads WHERE id = ?",
-        (fila[posicao],)
+        "SELECT nome, telefone, status, observacoes FROM leads WHERE id = ?",
+        (lead_id,)
     )
     resultado = cur.fetchone()
-    conn_dialog.close()
 
     if resultado is None:
+        conn_dialog.close()
         st.session_state["posicao_ligar"] += 1
         st.rerun()
         return
 
-    nome, telefone = resultado
+    nome, telefone, status_atual, observacoes_atual = resultado
 
     st.caption(f"{posicao + 1} de {len(fila)}")
     st.subheader(nome or "(sem nome)")
     st.write(f"📞 {telefone}")
 
-    col1, col2, col3 = st.columns(3)
+    obs_input = st.text_area(
+        "Observações",
+        value=observacoes_atual or "",
+        key=f"obs_ligar_{lead_id}"
+    )
 
-    # TODO (#23): gravar resultado/status e último contato antes de avançar
-    if col1.button("✅ Ok e Próximo", use_container_width=True):
+    config = carregar_config()
+
+    mensagem_automatica_input = st.checkbox(
+        "Mensagem automática",
+        value=config["mensagem_automatica"],
+        key=f"msg_auto_{lead_id}"
+    )
+
+    if mensagem_automatica_input != config["mensagem_automatica"]:
+        config["mensagem_automatica"] = mensagem_automatica_input
+        salvar_config(config)
+
+    em_pausa = esta_em_pausa()
+    pode_enviar = pode_enviar_primeiro_contato()
+    estado = estado_atual()
+    limite = obter_limite_ciclo()
+
+    if em_pausa:
+        restante = tempo_restante_pausa()
+        minutos, segundos = restante // 60, restante % 60
+        st.error(f"⛔ Pausa ativa — libera em {minutos:02d}:{segundos:02d}")
+    else:
+        st.success("🟢 Envio liberado")
+
+    st.caption(f"📊 Ciclo atual: {estado['contador']} / {limite}")
+
+    if mensagem_automatica_input:
+        mensagem = gerar_mensagem({"nome": nome})
+        url = f"https://wa.me/55{telefone}?text={quote(mensagem)}"
+    else:
+        url = f"https://wa.me/55{telefone}"
+
+    col1, col2 = st.columns(2)
+
+    if em_pausa or not pode_enviar:
+        col1.button("📲 WhatsApp (bloqueado)", disabled=True, use_container_width=True)
+    else:
+        col1.link_button(
+            "📲 Abrir WhatsApp",
+            url,
+            on_click=processar_abertura_whatsapp,
+            kwargs={
+                "lead_id": lead_id,
+                "status_atual": status_atual,
+                "observacoes": obs_input,
+            },
+            type="primary",
+            use_container_width=True,
+        )
+
+    if col2.button("➡️ Próximo", use_container_width=True):
+        agora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        novo_status = "Tentativa sem resposta" if status_atual == "Não contatado" else status_atual
+
+        conn_dialog.execute(
+            "UPDATE leads SET status=?, ultimo_contato=?, observacoes=? WHERE id=?",
+            (novo_status, agora, obs_input, lead_id)
+        )
+        conn_dialog.commit()
+        conn_dialog.close()
         st.session_state["posicao_ligar"] += 1
         st.rerun()
 
-    # TODO (#23): abrir WhatsApp a partir daqui
-    if col2.button("🚫 Número inválido", use_container_width=True):
-        st.session_state["posicao_ligar"] += 1
-        st.rerun()
-
-    if col3.button("✖ Fechar", use_container_width=True):
+    if st.button("✖ Fechar", use_container_width=True):
+        conn_dialog.close()
         st.session_state["mostrar_dialog_ligar"] = False
         st.rerun()
-
 
 if st.session_state.get("mostrar_dialog_ligar"):
     dialog_ligar()
@@ -281,47 +339,47 @@ if "lead_id" in st.session_state:
 
         st.rerun()
 
-    whatsapp = str(lead["telefone"])
+    # whatsapp = str(lead["telefone"])
 
-    if lead["status"] == "Não contatado":
-        mensagem = gerar_mensagem(lead)
+    # if lead["status"] == "Não contatado":
+    #     mensagem = gerar_mensagem(lead)
 
-        url = (
-            f"https://wa.me/55{whatsapp}"
-            f"?text={quote(mensagem)}"
-        )
+    #     url = (
+    #         f"https://wa.me/55{whatsapp}"
+    #         f"?text={quote(mensagem)}"
+    #     )
 
-    else:
-        url = f"https://wa.me/55{whatsapp}"
+    # else:
+    #     url = f"https://wa.me/55{whatsapp}"
 
-    estado = estado_atual()
+    # estado = estado_atual()
 
-    em_pausa = esta_em_pausa()
-    pode_enviar = pode_enviar_primeiro_contato()
+    # em_pausa = esta_em_pausa()
+    # pode_enviar = pode_enviar_primeiro_contato()
 
-    contador = estado["contador"]
+    # contador = estado["contador"]
 
-    limite = obter_limite_ciclo()
+    # limite = obter_limite_ciclo()
 
-    if em_pausa:
-        restante = tempo_restante_pausa()
-        minutos = restante // 60
-        segundos = restante % 60
+    # if em_pausa:
+    #     restante = tempo_restante_pausa()
+    #     minutos = restante // 60
+    #     segundos = restante % 60
 
-        st.error(f"⛔ Pausa ativa — libera em {minutos:02d}:{segundos:02d}")
-    else:
-        st.success("🟢 Envio liberado")
+    #     st.error(f"⛔ Pausa ativa — libera em {minutos:02d}:{segundos:02d}")
+    # else:
+    #     st.success("🟢 Envio liberado")
 
-    st.caption(f"📊 Ciclo atual: {contador} / {limite}")
+    # st.caption(f"📊 Ciclo atual: {contador} / {limite}")
 
-    if em_pausa or not pode_enviar:
-        st.button("📲 Abrir WhatsApp (bloqueado)", disabled=True)
+    # if em_pausa or not pode_enviar:
+    #     st.button("📲 Abrir WhatsApp (bloqueado)", disabled=True)
 
-    else:
-        st.link_button(
-            "📲 Abrir WhatsApp",
-            url,
-            on_click=processar_abertura_whatsapp,
-            args=(lead_id, lead["status"]),
-            type="primary",
-        )
+    # else:
+    #     st.link_button(
+    #         "📲 Abrir WhatsApp",
+    #         url,
+    #         on_click=processar_abertura_whatsapp,
+    #         args=(lead_id, lead["status"]),
+    #         type="primary",
+    #     )
