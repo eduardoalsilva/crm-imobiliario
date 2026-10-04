@@ -4,6 +4,7 @@ import pandas as pd
 from urllib.parse import quote
 from datetime import date
 from config_corretor import carregar_config, salvar_config
+import database
 
 from database import criar_banco
 from importador import importar_excel
@@ -19,9 +20,66 @@ from controle_envio import (
     tempo_restante_pausa,
 )
 
+
+
 criar_banco()
 
 conn = sqlite3.connect("crm.db")
+
+@st.dialog("Ligar")
+def dialog_ligar():
+    import database
+    conn_dialog = database.conectar()
+
+    fila = st.session_state.get("fila_ligar", [])
+    posicao = st.session_state.get("posicao_ligar", 0)
+
+    if posicao >= len(fila):
+        st.success(f"Fila concluída — {len(fila)} leads processados.")
+        if st.button("Fechar"):
+            st.session_state["mostrar_dialog_ligar"] = False
+            conn_dialog.close()
+            st.rerun()
+        return
+
+    cur = conn_dialog.cursor()
+    cur.execute(
+        "SELECT nome, telefone FROM leads WHERE id = ?",
+        (fila[posicao],)
+    )
+    resultado = cur.fetchone()
+    conn_dialog.close()
+
+    if resultado is None:
+        st.session_state["posicao_ligar"] += 1
+        st.rerun()
+        return
+
+    nome, telefone = resultado
+
+    st.caption(f"{posicao + 1} de {len(fila)}")
+    st.subheader(nome or "(sem nome)")
+    st.write(f"📞 {telefone}")
+
+    col1, col2, col3 = st.columns(3)
+
+    # TODO (#23): gravar resultado/status e último contato antes de avançar
+    if col1.button("✅ Ok e Próximo", use_container_width=True):
+        st.session_state["posicao_ligar"] += 1
+        st.rerun()
+
+    # TODO (#23): abrir WhatsApp a partir daqui
+    if col2.button("🚫 Número inválido", use_container_width=True):
+        st.session_state["posicao_ligar"] += 1
+        st.rerun()
+
+    if col3.button("✖ Fechar", use_container_width=True):
+        st.session_state["mostrar_dialog_ligar"] = False
+        st.rerun()
+
+
+if st.session_state.get("mostrar_dialog_ligar"):
+    dialog_ligar()
 
 st.set_page_config(
     page_title="CRM Imobiliário",
@@ -104,6 +162,11 @@ if status != "Todos":
 df = pd.read_sql(query, conn)
 
 st.subheader(f"Leads ({len(df)})")
+
+if st.button("📞 Ligar", disabled=df.empty):
+    st.session_state["fila_ligar"] = df["id"].tolist()
+    st.session_state["posicao_ligar"] = 0
+    st.session_state["mostrar_dialog_ligar"] = True
 
 df_exibicao = df[
     [
