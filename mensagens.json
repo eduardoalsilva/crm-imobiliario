@@ -1,26 +1,6 @@
 {
 "primeiro_contato": [
-"Olá {nome}, tudo bem?\n\nMeu nome é {corretor}, sou especialista no programa Minha Casa Minha Vida na {empresa}.\n\nVi que há algum tempo você demonstrou interesse em adquirir um imóvel e queria saber se você ainda está procurando.\n\nSe sim, qual região você tem interesse?\n\n{corretor}\nPlano&Plano",
-
-
-"Oi {nome}, tudo bem?\n\nAqui é {corretor}, especialista no Minha Casa Minha Vida na {empresa}.\n\nHá algum tempo você demonstrou interesse em comprar um apartamento e estou entrando em contato para saber se essa busca ainda continua.\n\nVocê ainda procura imóvel? Em qual região?\n\n{corretor}\nPlano&Plano",
-
-"Olá {nome}, tudo bem?\n\nSou {corretor}, da {empresa}, especialista no Minha Casa Minha Vida.\n\nVi que você já havia demonstrado interesse em adquirir um apartamento há algum tempo.\n\nQueria saber se você ainda tem interesse em comprar e qual região está procurando.\n\n{corretor}\nPlano&Plano",
-
-"Olá {nome}, tudo bem?\n\nAqui é {corretor} da {empresa}.\n\nVocê demonstrou interesse em adquirir um imóvel há algum tempo, e queria saber se ainda está procurando um apartamento.\n\nCaso esteja, qual região você procura?\n\n{corretor}\nPlano&Plano",
-
-"Oi {nome}, tudo bem?\n\nMeu nome é {corretor} e sou especialista no Minha Casa Minha Vida na {empresa}.\n\nVi que você tinha interesse em adquirir um imóvel há algum tempo e queria saber se esse plano continua de pé.\n\nSe ainda estiver procurando, qual região você tem interesse?\n\n{corretor}\nPlano&Plano",
-
-"Olá {nome}, tudo bem?\n\nAqui é {corretor}, especialista no programa Minha Casa Minha Vida.\n\nHá algum tempo você demonstrou interesse em um apartamento e queria saber como está sua busca hoje.\n\nVocê ainda tem interesse em comprar? Qual região você procura?\n\n{corretor}\nPlano&Plano",
-
-"Olá {nome}, tudo bem?\n\nSou {corretor}, da {empresa}, especialista no Minha Casa Minha Vida.\n\nVi que você demonstrou interesse em comprar um imóvel há algum tempo e estou entrando em contato para saber se ainda está buscando.\n\nEm qual região você gostaria de encontrar seu apartamento?\n\n{corretor}\nPlano&Plano",
-
-"Oi {nome}, tudo bem?\n\nAqui é {corretor} da {empresa}, especialista no Minha Casa Minha Vida.\n\nVocê havia demonstrado interesse em adquirir um imóvel há algum tempo e queria confirmar se ainda está procurando.\n\nSe estiver, qual região seria de seu interesse?\n\n{corretor}\nPlano&Plano",
-
-"Olá {nome}, tudo bem?\n\nMeu nome é {corretor}, especialista no programa Minha Casa Minha Vida na {empresa}.\n\nVocê já havia demonstrado interesse em adquirir um apartamento e queria saber se ainda pretende comprar um imóvel.\n\nQual região você está procurando atualmente?\n\n{corretor}\nPlano&Plano",
-
-"Olá {nome}, tudo bem?\n\nAqui é {corretor}, da {empresa}.\n\nVi que há algum tempo você demonstrou interesse em comprar um apartamento e queria saber se ainda está buscando um imóvel.\n\nSe sim, qual região você gostaria de encontrar?\n\n{corretor}\nPlano&Plano"
-
+"Olá, {nome}, como vai?"
 
 ]
 }

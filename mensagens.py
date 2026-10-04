@@ -1,6 +1,7 @@
 import json
 import random
 from pathlib import Path
+import config_corretor
 
 
 def carregar_mensagens():
@@ -23,8 +24,10 @@ def gerar_mensagem(lead):
 
     primeiro_nome = nome.split()[0].capitalize()
 
+    config = config_corretor.carregar_config()
+
     return texto.format(
         nome=primeiro_nome,
-        corretor="Hermes",
-        empresa="Plano&Plano"
+        corretor=config["nome_corretor"],
+        empresa=config['nome_imobiliaria']
     )

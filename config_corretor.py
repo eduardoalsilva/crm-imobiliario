@@ -5,7 +5,8 @@ CONFIG_PATH = "config_corretor.json"
 
 PADRAO = {
     "nome_corretor": "",
-    "mensagem_automatica": True
+    "mensagem_automatica": True,
+    "nome_imobiliaria": ""
 }
 
 
