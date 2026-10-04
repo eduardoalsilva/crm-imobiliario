@@ -68,6 +68,31 @@ def dialog_ligar():
         key=f"obs_ligar_{lead_id}"
     )
 
+    status_opcoes = [
+    "Não contatado",
+    "Tentativa sem resposta",
+    "Conversando",
+    "Interessado",
+    "Agendou visita",
+    "Em negociação",
+    "Não tem interesse",
+    "Já comprou imóvel",
+    "Sem Whatsapp"
+    ]
+
+    status_padrao = (
+        "Tentativa sem resposta"
+        if status_atual == "Não contatado"
+        else status_atual
+    )
+
+    status_input = st.selectbox(
+        "Status",
+        status_opcoes,
+        index=status_opcoes.index(status_padrao) if status_padrao in status_opcoes else 0,
+        key=f"status_ligar_{lead_id}"
+    )
+
     config = carregar_config()
 
     mensagem_automatica_input = st.checkbox(
@@ -112,6 +137,7 @@ def dialog_ligar():
             kwargs={
                 "lead_id": lead_id,
                 "status_atual": status_atual,
+                "novo_status": status_input,
                 "observacoes": obs_input,
             },
             type="primary",
@@ -120,11 +146,10 @@ def dialog_ligar():
 
     if col2.button("➡️ Próximo", use_container_width=True):
         agora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        novo_status = "Tentativa sem resposta" if status_atual == "Não contatado" else status_atual
 
         conn_dialog.execute(
             "UPDATE leads SET status=?, ultimo_contato=?, observacoes=? WHERE id=?",
-            (novo_status, agora, obs_input, lead_id)
+            (status_input, agora, obs_input, lead_id)
         )
         conn_dialog.commit()
         conn_dialog.close()
