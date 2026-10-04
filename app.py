@@ -59,6 +59,10 @@ def dialog_ligar():
     nome, telefone, status_atual, observacoes_atual = resultado
 
     st.caption(f"{posicao + 1} de {len(fila)}")
+    contador = st.session_state.get("contador_ligacoes", 0)
+    cor_bolinha = "🟢" if contador >= 40 else "🔴"
+
+    st.write(f"{cor_bolinha} **{contador} / 40** ligações nesta sessão")
     st.subheader(nome or "(sem nome)")
     st.write(f"📞 {telefone}")
 
@@ -154,11 +158,13 @@ def dialog_ligar():
         conn_dialog.commit()
         conn_dialog.close()
         st.session_state["posicao_ligar"] += 1
+        st.session_state["contador_ligacoes"] = st.session_state.get("contador_ligacoes", 0) + 1
         st.rerun()
 
     if st.button("✖ Fechar", use_container_width=True):
         conn_dialog.close()
         st.session_state["mostrar_dialog_ligar"] = False
+        st.session_state["contador_ligacoes"] = 0
         st.rerun()
 
 if st.session_state.get("mostrar_dialog_ligar"):
@@ -249,6 +255,7 @@ st.subheader(f"Leads ({len(df)})")
 if st.button("📞 Ligar", disabled=df.empty):
     st.session_state["fila_ligar"] = df["id"].tolist()
     st.session_state["posicao_ligar"] = 0
+    st.session_state["contador_ligacoes"] = 0
     st.session_state["mostrar_dialog_ligar"] = True
 
 df_exibicao = df[
