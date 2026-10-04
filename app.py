@@ -103,7 +103,7 @@ if status != "Todos":
 
 df = pd.read_sql(query, conn)
 
-st.subheader("Leads")
+st.subheader(f"Leads ({len(df)})")
 
 df_exibicao = df[
     [
