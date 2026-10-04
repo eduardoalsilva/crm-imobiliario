@@ -41,6 +41,15 @@ if nome_corretor_input != config["nome_corretor"]:
     config["nome_corretor"] = nome_corretor_input
     salvar_config(config)
 
+nome_imobiliaria_input = st.sidebar.text_input(
+    "Imobiliária",
+    config["nome_imobiliaria"]
+)
+
+if nome_imobiliaria_input != config["nome_imobiliaria"]:
+    config["nome_imobiliaria"] = nome_imobiliaria_input
+    salvar_config(config)
+
 # IMPORTAÇÃO
 
 arquivo = st.sidebar.file_uploader(
