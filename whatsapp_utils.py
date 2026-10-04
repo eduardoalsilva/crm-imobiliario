@@ -18,6 +18,7 @@ def processar_abertura_whatsapp(
     lead_id: int,
     status_atual: str,
     callback=None,
+    novo_status: str = None,
     observacoes: str = None,
 ) -> None:
     conn = database.conectar()
@@ -27,9 +28,10 @@ def processar_abertura_whatsapp(
 
         if status_atual == "Não contatado":
             controle_envio.registrar_primeiro_contato()
-            novo_status = "Tentativa sem resposta"
-        else:
-            novo_status = status_atual
+
+        status_final = novo_status if novo_status is not None else (
+            "Tentativa sem resposta" if status_atual == "Não contatado" else status_atual
+        )
 
         if observacoes is not None:
             conn.execute(
@@ -38,7 +40,7 @@ def processar_abertura_whatsapp(
                 SET status = ?, ultimo_contato = ?, observacoes = ?
                 WHERE id = ?
                 """,
-                (novo_status, agora, observacoes, lead_id),
+                (status_final, agora, observacoes, lead_id),
             )
         else:
             conn.execute(
@@ -47,7 +49,7 @@ def processar_abertura_whatsapp(
                 SET status = ?, ultimo_contato = ?
                 WHERE id = ?
                 """,
-                (novo_status, agora, lead_id),
+                (status_final, agora, lead_id),
             )
 
         conn.commit()
